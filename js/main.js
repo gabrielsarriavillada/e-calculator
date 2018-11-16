@@ -1,3 +1,4 @@
+// Enum with the available operators.
 const operator = {
     ADDITION: 'addition',
     SUBTRACTION: 'subtraction',
@@ -6,17 +7,18 @@ const operator = {
     EQUALITY: 'equality',
 };
 
-let elem = document.querySelector('.display-screen');
+// Selector of elements in the calculator.
+let displayScreen = document.querySelector('.display-screen');
+let calculatorPad = document.querySelector('.calculator-pad');
+
 let currentAmountInString = '';
 let partialResult = 0;
 let waitForNewNumber = true;
 let nextAction = '';
 
-let selectedButton;
 
-let calculatorPad = document.querySelector('.calculator-pad');
-
-calculatorPad.onclick = function(event) {
+// Action is performed when a button in calculator pad is clicked on.
+calculatorPad.onclick = (event) => {
     let target = event.target;
 
     if (target.tagName != 'DIV') return;
@@ -24,8 +26,35 @@ calculatorPad.onclick = function(event) {
     select(target);
 };
 
-function select(button) {
-    press(button);
+// Button is displayed as pressed while it is pressed by the mouse.
+calculatorPad.onmousedown = (event) => {
+    let target = event.target;
+
+    if (target.tagName != 'DIV') return;
+
+    target.classList.add('active');
+};
+
+// Button is displayed as unpressed if it is not longer pressed by mouse.
+calculatorPad.onmouseup = (event) => {
+    let target = event.target;
+
+    if (target.tagName != 'DIV') return;
+
+    target.classList.remove('active');
+};
+
+// Button is displayed as unpressed if mouse leaves the button.
+calculatorPad.onmouseout = (event) => {
+    let target = event.target;
+
+    if (target.tagName != 'DIV') return;
+
+    target.classList.remove('active');
+};
+
+// Actions to be performed when a button in calculator pad is clicked on.
+let select = (button) => {
     switch (button.title) {
         case 'addition':
             resolveOperation();
@@ -48,26 +77,18 @@ function select(button) {
             nextAction = '';
             break;
         case 'clear':
-            elem.innerHTML = '0';
+            displayScreen.innerHTML = '0';
             currentAmountInString = '0';
             partialResult = 0;
             console.log(`Your current number is ${currentAmountInString}`);
             break;
         default:
-            console.log(`My attribute value is: ${button.title}`)
             addDigit(button.title);
             printInScreen();
     }
-}
+};
 
-function press(button) {
-    if (selectedButton) {
-        selectedButton.classList.remove('highlight');
-    }
-    selectedButton = button;
-    selectedButton.classList.add('highlight');
-}
-
+// Make an math operation.
 let resolveOperation = () => {
     const currentAmount = parseInt(currentAmountInString);
 
@@ -99,7 +120,7 @@ let resolveOperation = () => {
                 console.log('Invalid operator.');
         }
 
-        elem.innerHTML = partialResult.toString();
+        displayScreen.innerHTML = partialResult.toString();
 
         // Current amount is restarted the first time an addition is submit
         currentAmountInString = '0';
@@ -108,15 +129,17 @@ let resolveOperation = () => {
     waitForNewNumber = true;
 };
 
+// Add a digit to the current amount.
 let addDigit = (digit) => {
     waitForNewNumber = false;
     currentAmountInString += digit;
 };
 
+// Print current amount on display screen.
 let printInScreen = () => {
     while (currentAmountInString[0] === '0' && currentAmountInString.length > 1) {
         currentAmountInString = currentAmountInString.substring(1);
     }
-    elem.innerHTML = currentAmountInString;
+    displayScreen.innerHTML = currentAmountInString;
     console.log(`Your current number is ${currentAmountInString}`);
 };
