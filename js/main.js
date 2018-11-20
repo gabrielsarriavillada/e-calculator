@@ -12,13 +12,11 @@ let displayScreen = document.querySelector('.display-screen');
 let calculatorPad = document.querySelector('.calculator-pad');
 
 // Initialize e-Calculator.
-let currentAmountInString = '';
+let currentAmountInString = '0';
 let partialResult = 0;
 let waitForNewNumber = true;
 let nextAction = '';
 let waitForFirstDecimal = false;
-
-displayScreen.innerHTML = '0';
 
 // Action is performed when a button in calculator pad is clicked on.
 calculatorPad.onclick = (event) => {
@@ -98,7 +96,7 @@ let select = (button) => {
     }
 };
 
-// Make an math operation.
+// Make math operation.
 let resolveOperation = () => {
     const currentAmount = parseFloat(currentAmountInString);
     let display = '';
@@ -126,13 +124,11 @@ let resolveOperation = () => {
         }
 
         if (partialResult > 99999999999) {
-            display = 'A LOT!';
+            displayScreen.innerHTML = 'TOO BIG!';
         } else {
-            console.log(`Amount before being rounded is ${partialResult}`);
-            display = roundAmount(partialResult);
+            currentAmountInString = partialResult.toString();
+            printInScreen();
         }
-
-        displayScreen.innerHTML = display;
 
         // Current amount is restarted when operation is submitted.
         currentAmountInString = '0';
@@ -162,47 +158,63 @@ let addDecimalSeparator = () => {
     if (!currentAmountInString.includes('.')) waitForFirstDecimal = true;
 };
 
-// Print current amount on display screen.
+// Adapt current amount and print it on display screen.
 let printInScreen = () => {
-    while (currentAmountInString[0] === '0' && currentAmountInString.length > 1) {
-        currentAmountInString = currentAmountInString.substring(1);
-    }
+    currentAmountInString = adaptAmount(currentAmountInString);
+    currentAmountInString = removeSpareZeros(currentAmountInString);
 
+    // Add 0 as integer part when . is the first character to be introduced.
     if (currentAmountInString[0] === '.') currentAmountInString = `0${currentAmountInString}`;
 
     displayScreen.innerHTML = currentAmountInString;
-    console.log(`Your current number is ${currentAmountInString}, where first digit is ${currentAmountInString[0]} and last digit is ${currentAmountInString[currentAmountInString.length - 1]}`);
 };
 
-
-let roundAmount = (amount) => {
-    let amountToString = amount.toString();
+// Prepare amount before being printed on screen. It needs to be an expanded number, with equal or less than 12 digits.
+let adaptAmount = (amountInString) => {
     let lastDecimalRemoved = '';
 
     // Avoid logic in case of integer.
-    if(!amountToString.includes('.') && !amountToString.includes('e')) return amountToString;
+    if(!amountInString.includes('.') && !amountInString.includes('e')) return amountInString;
 
     // TODO: Unify regular expression
     // Convert the amount with format X.Ye-Z to expanded number.
-    if (amountToString.match(/^[-+]?[1-9]\.[0-9]+e[-]?[1-9][0-9]*$/) || amountToString.match(/^[-+]?[1-9]+e[-]?[1-9][0-9]*$/)) {
-        console.log('Inside IF');
-        amountToString = (+amountToString).toFixed(getPrecision(amountToString));
+    if (amountInString.match(/^[-+]?[1-9]\.[0-9]+e[-]?[1-9][0-9]*$/) ||
+        amountInString.match(/^[-+]?[1-9]+e[-]?[1-9][0-9]*$/)) {
+        amountInString = (+amountInString).toFixed(getPrecision(amountInString));
     }
 
-    const int = amountToString.split('.')[0];
-    let dec = amountToString.split('.')[1];
+    const int = amountInString.split('.')[0];
+    let dec = amountInString.split('.')[1];
 
+    // Reduce the amount of decimals according to the max amount of digit in the e-Calculator.
     while ( int.length + dec.length > 12) {
         lastDecimalRemoved = dec[dec.length - 1];
         dec = dec.substring(0, dec.length - 1);
     }
 
+    // Round last decimal digit.
     if (parseInt(lastDecimalRemoved) > 5) {
         const lastDecimal = (parseInt(dec[dec.length - 1]) + 1).toString();
         dec = dec.substring(0, dec.length - 1);
         dec = dec + lastDecimal;
     }
 
+    return `${int}.${dec}`;
+};
+
+let removeSpareZeros = (amountInString) => {
+    let int = amountInString.split('.')[0];
+    let dec = amountInString.split('.')[1];
+
+    // Remove 0s on the left of integer part.
+    while (int[0] === '0' && int.length > 1) {
+        int = int.substring(1);
+    }
+
+    // Avoid logic in case of integer.
+    if (!amountInString.includes('.')) return int;
+
+    // Remove 0s on the right of decimal part.
     while (dec[dec.length - 1] === '0') {
         dec = dec.substring(0, dec.length - 1)
     }
