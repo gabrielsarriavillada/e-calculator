@@ -79,11 +79,14 @@ let select = (button) => {
             resolveOperation();
             nextAction = '';
             break;
-        case 'clear':
-            displayScreen.innerHTML = '0';
+        case 'clear-to-empty':
+            currentAmountInString = '0';
+            printInScreen();
+            break;
+        case 'all-clear':
             currentAmountInString = '0';
             partialResult = 0;
-            console.log(`Your current number is ${currentAmountInString}`);
+            printInScreen();
             break;
         case 'decimal':
             addDecimalSeparator();
