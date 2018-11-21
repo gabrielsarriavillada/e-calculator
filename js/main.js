@@ -13,9 +13,10 @@ let calculatorPad = document.querySelector('.calculator-pad');
 
 // Initialize e-Calculator.
 let currentAmountInString = '0';
+let signOfCurrentAmount = '';
 let partialResult = 0;
 let waitForNewNumber = true;
-let nextAction = '';
+let nextAction = operator.EQUALITY;
 let waitForFirstDecimal = false;
 
 // Action is performed when a button in calculator pad is clicked on.
@@ -75,7 +76,10 @@ let select = (button) => {
             break;
         case 'equality':
             resolveOperation();
-            nextAction = '';
+            nextAction = operator.EQUALITY;
+            break;
+        case 'invert':
+            plusNegative();
             break;
         case 'clear-to-empty':
             currentAmountInString = '0';
@@ -88,7 +92,6 @@ let select = (button) => {
             break;
         case 'decimal':
             addDecimalSeparator();
-            printInScreen();
             break;
         default:
             addDigit(button.title);
@@ -98,8 +101,9 @@ let select = (button) => {
 
 // Make math operation.
 let resolveOperation = () => {
-    const currentAmount = parseFloat(currentAmountInString);
-    let display = '';
+    let currentAmount = parseFloat(currentAmountInString);
+
+    if (signOfCurrentAmount === '-') currentAmount *= -1;
 
     if (!waitForNewNumber) {
         // Partial result is updated according to last action
@@ -116,7 +120,7 @@ let resolveOperation = () => {
             case operator.DIVISION:
                 partialResult = partialResult / currentAmount;
                 break;
-            case '':
+            case operator.EQUALITY:
                 partialResult = currentAmount;
                 break;
             default:
@@ -126,12 +130,17 @@ let resolveOperation = () => {
         if (partialResult > 99999999999) {
             displayScreen.innerHTML = 'TOO BIG!';
         } else {
-            currentAmountInString = partialResult.toString();
+            currentAmountInString = Math.abs(partialResult).toString();
+            signOfCurrentAmount = '';
+
+            if (partialResult < 0) signOfCurrentAmount = '-';
+
             printInScreen();
         }
 
-        // Current amount is restarted when operation is submitted.
+        // Current amount and sign are restarted when operation is submitted.
         currentAmountInString = '0';
+        signOfCurrentAmount = '';
     }
 
     waitForNewNumber = true;
@@ -153,6 +162,34 @@ let addDigit = (digit) => {
     }
 };
 
+// Change the sign of the amount displayed in the screen.
+let plusNegative = () => {
+    // The amount in the screen is a result of an operation.
+    if (waitForNewNumber === true) {
+        currentAmountInString = Math.abs(partialResult).toString();
+        signOfCurrentAmount = '-';
+
+        if (partialResult < 0) signOfCurrentAmount = '';
+
+        printInScreen();
+
+        partialResult *= -1;
+        currentAmountInString = '0';
+        signOfCurrentAmount = '';
+        return;
+    }
+
+    // The amount in the screen is being introduced.
+    if (signOfCurrentAmount === '-' || currentAmountInString === '0') {
+        signOfCurrentAmount = '';
+    } else if (signOfCurrentAmount === '') {
+        signOfCurrentAmount = '-';
+    } else {
+        console.log('Unexpected sign in current amount');
+    }
+    printInScreen();
+};
+
 let addDecimalSeparator = () => {
     waitForNewNumber = false;
     if (!currentAmountInString.includes('.')) waitForFirstDecimal = true;
@@ -166,7 +203,7 @@ let printInScreen = () => {
     // Add 0 as integer part when . is the first character to be introduced.
     if (currentAmountInString[0] === '.') currentAmountInString = `0${currentAmountInString}`;
 
-    displayScreen.innerHTML = currentAmountInString;
+    displayScreen.innerHTML = signOfCurrentAmount + currentAmountInString;
 };
 
 // Prepare amount before being printed on screen. It needs to be an expanded number, with equal or less than 12 digits.
