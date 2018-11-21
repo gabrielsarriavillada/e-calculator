@@ -11,6 +11,8 @@ const operator = {
 let displayScreen = document.querySelector('.display-screen');
 let calculatorPad = document.querySelector('.calculator-pad');
 
+const SCREEN_LENGTH = 12;
+
 // Initialize e-Calculator.
 let currentAmountInString = '0';
 let signOfCurrentAmount = '';
@@ -127,8 +129,8 @@ let resolveOperation = () => {
                 console.log('Invalid operator.');
         }
 
-        if (partialResult > 99999999999) {
-            displayScreen.innerHTML = 'TOO BIG!';
+        if (partialResult > (Math.pow(10, SCREEN_LENGTH) - 1)) {
+            displayScreen.innerHTML = 'TAS PASAO!';
         } else {
             currentAmountInString = Math.abs(partialResult).toString();
             signOfCurrentAmount = '';
@@ -153,7 +155,7 @@ let addDigit = (digit) => {
 
     if (currentAmountInString.includes('.')) amountLength--;
 
-    if (amountLength < 12) {
+    if (amountLength < SCREEN_LENGTH) {
         if (waitForFirstDecimal) {
             currentAmountInString += '.';
             waitForFirstDecimal = false;
@@ -224,13 +226,13 @@ let adaptAmount = (amountInString) => {
     let dec = amountInString.split('.')[1];
 
     // Reduce the amount of decimals according to the max amount of digit in the e-Calculator.
-    while ( int.length + dec.length > 12) {
+    while ( int.length + dec.length > SCREEN_LENGTH) {
         lastDecimalRemoved = dec[dec.length - 1];
         dec = dec.substring(0, dec.length - 1);
     }
 
     // Round last decimal digit.
-    if (parseInt(lastDecimalRemoved) > 5) {
+    if (parseInt(lastDecimalRemoved) > 4) {
         const lastDecimal = (parseInt(dec[dec.length - 1]) + 1).toString();
         dec = dec.substring(0, dec.length - 1);
         dec = dec + lastDecimal;

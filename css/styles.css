@@ -6,7 +6,7 @@
 body {
     background-color: black;
     color: white;
-    font-family: Arial;
+    font-family: Arial, serif;
 }
 
 .calculator-container {
@@ -19,25 +19,26 @@ body {
     margin: 30px;
     padding-bottom: 20px;
     padding-right: 20px;
-    background-color: #005000;
-    font-family: calculator, Arial;
+    background-color: #005040;
+    font-family: calculator, serif;
     font-size: 90px;
     text-align: right;
+    border-radius: 5px;
 }
 
 .calculator-pad {
     display: grid;
     grid-template-columns: 100px 100px 100px 100px 100px;
-    grid-template-rows: 80px 80px 80px 80px 80px;
+    grid-template-rows: 80px 80px 80px 80px;
     grid-gap: 20px;
     color: whitesmoke;
     font-size: 25px;
 }
 
 .plus {
-    grid-column-start: 5;
-    grid-row-start: 4;
-    grid-row-end: 6;
+    grid-column-start: 4;
+    grid-row-start: 3;
+    grid-row-end: 5;
 }
 
 .pad-button {
