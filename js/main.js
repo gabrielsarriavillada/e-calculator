@@ -14,9 +14,11 @@ let calculatorPad = document.querySelector('.calculator-pad');
 const SCREEN_LENGTH = 12;
 
 // Initialize e-Calculator.
-let currentAmountInString = '0';
-let signOfCurrentAmount = '';
-let partialResult = 0;
+let number = {
+    value: '0',
+    sign: '',
+};
+let result = 0;
 let waitForNewNumber = true;
 let nextAction = operator.EQUALITY;
 let waitForFirstDecimal = false;
@@ -84,12 +86,12 @@ let select = (button) => {
             plusNegative();
             break;
         case 'clear-to-empty':
-            currentAmountInString = '0';
+            number.value = '0';
             printInScreen();
             break;
         case 'all-clear':
-            currentAmountInString = '0';
-            partialResult = 0;
+            number.value = '0';
+            result = 0;
             printInScreen();
             break;
         case 'decimal':
@@ -103,46 +105,46 @@ let select = (button) => {
 
 // Make math operation.
 let resolveOperation = () => {
-    let currentAmount = parseFloat(currentAmountInString);
+    let currentAmount = parseFloat(number.value);
 
-    if (signOfCurrentAmount === '-') currentAmount *= -1;
+    if (number.sign === '-') currentAmount *= -1;
 
     if (!waitForNewNumber) {
-        // Partial result is updated according to last action
+        // Result is updated according to last action.
         switch (nextAction) {
             case operator.ADDITION:
-                partialResult += currentAmount;
+                result += currentAmount;
                 break;
             case operator.SUBTRACTION:
-                partialResult -= currentAmount;
+                result -= currentAmount;
                 break;
             case operator.MULTIPLICATION:
-                partialResult = partialResult * currentAmount;
+                result = result * currentAmount;
                 break;
             case operator.DIVISION:
-                partialResult = partialResult / currentAmount;
+                result = result / currentAmount;
                 break;
             case operator.EQUALITY:
-                partialResult = currentAmount;
+                result = currentAmount;
                 break;
             default:
                 console.log('Invalid operator.');
         }
 
-        if (partialResult > (Math.pow(10, SCREEN_LENGTH) - 1)) {
+        if (result > (Math.pow(10, SCREEN_LENGTH) - 1)) {
             displayScreen.innerHTML = 'TAS PASAO!';
         } else {
-            currentAmountInString = Math.abs(partialResult).toString();
-            signOfCurrentAmount = '';
+            number.value = Math.abs(result).toString();
+            number.sign = '';
 
-            if (partialResult < 0) signOfCurrentAmount = '-';
+            if (result < 0) number.sign = '-';
 
             printInScreen();
         }
 
         // Current amount and sign are restarted when operation is submitted.
-        currentAmountInString = '0';
-        signOfCurrentAmount = '';
+        number.value = '0';
+        number.sign = '';
     }
 
     waitForNewNumber = true;
@@ -150,17 +152,17 @@ let resolveOperation = () => {
 
 // Add a digit to the current amount.
 let addDigit = (digit) => {
-    let amountLength = currentAmountInString.length;
+    let amountLength = number.value.length;
     waitForNewNumber = false;
 
-    if (currentAmountInString.includes('.')) amountLength--;
+    if (number.value.includes('.')) amountLength--;
 
     if (amountLength < SCREEN_LENGTH) {
         if (waitForFirstDecimal) {
-            currentAmountInString += '.';
+            number.value += '.';
             waitForFirstDecimal = false;
         }
-        currentAmountInString += digit;
+        number.value += digit;
     }
 };
 
@@ -168,24 +170,24 @@ let addDigit = (digit) => {
 let plusNegative = () => {
     // The amount in the screen is a result of an operation.
     if (waitForNewNumber === true) {
-        currentAmountInString = Math.abs(partialResult).toString();
-        signOfCurrentAmount = '-';
+        number.value = Math.abs(result).toString();
+        number.sign = '-';
 
-        if (partialResult < 0) signOfCurrentAmount = '';
+        if (result < 0) number.sign = '';
 
         printInScreen();
 
-        partialResult *= -1;
-        currentAmountInString = '0';
-        signOfCurrentAmount = '';
+        result *= -1;
+        number.value = '0';
+        number.sign = '';
         return;
     }
 
     // The amount in the screen is being introduced.
-    if (signOfCurrentAmount === '-' || currentAmountInString === '0') {
-        signOfCurrentAmount = '';
-    } else if (signOfCurrentAmount === '') {
-        signOfCurrentAmount = '-';
+    if (number.sign === '-' || number.value === '0') {
+        number.sign = '';
+    } else if (number.sign === '') {
+        number.sign = '-';
     } else {
         console.log('Unexpected sign in current amount');
     }
@@ -194,36 +196,36 @@ let plusNegative = () => {
 
 let addDecimalSeparator = () => {
     waitForNewNumber = false;
-    if (!currentAmountInString.includes('.')) waitForFirstDecimal = true;
+    if (!number.value.includes('.')) waitForFirstDecimal = true;
 };
 
 // Adapt current amount and print it on display screen.
 let printInScreen = () => {
-    currentAmountInString = adaptAmount(currentAmountInString);
-    currentAmountInString = removeSpareZeros(currentAmountInString);
+    number.adaptAmount();
+    number.removeSpareZeros();
 
     // Add 0 as integer part when . is the first character to be introduced.
-    if (currentAmountInString[0] === '.') currentAmountInString = `0${currentAmountInString}`;
+    if (number.value[0] === '.') number.value = `0${number.value}`;
 
-    displayScreen.innerHTML = signOfCurrentAmount + currentAmountInString;
+    displayScreen.innerHTML = number.sign + number.value;
 };
 
 // Prepare amount before being printed on screen. It needs to be an expanded number, with equal or less than 12 digits.
-let adaptAmount = (amountInString) => {
+number.adaptAmount = () => {
     let lastDecimalRemoved = '';
 
     // Avoid logic in case of integer.
-    if(!amountInString.includes('.') && !amountInString.includes('e')) return amountInString;
+    if(!number.value.includes('.') && !number.value.includes('e')) return;
 
     // TODO: Unify regular expression
     // Convert the amount with format X.Ye-Z to expanded number.
-    if (amountInString.match(/^[-+]?[1-9]\.[0-9]+e[-]?[1-9][0-9]*$/) ||
-        amountInString.match(/^[-+]?[1-9]+e[-]?[1-9][0-9]*$/)) {
-        amountInString = (+amountInString).toFixed(getPrecision(amountInString));
+    if (number.value.match(/^[-+]?[1-9]\.[0-9]+e[-]?[1-9][0-9]*$/) ||
+        number.value.match(/^[-+]?[1-9]+e[-]?[1-9][0-9]*$/)) {
+        number.value = (+number.value).toFixed(getPrecision(number.value));
     }
 
-    const int = amountInString.split('.')[0];
-    let dec = amountInString.split('.')[1];
+    const int = number.value.split('.')[0];
+    let dec = number.value.split('.')[1];
 
     // Reduce the amount of decimals according to the max amount of digit in the e-Calculator.
     while ( int.length + dec.length > SCREEN_LENGTH) {
@@ -238,12 +240,12 @@ let adaptAmount = (amountInString) => {
         dec = dec + lastDecimal;
     }
 
-    return `${int}.${dec}`;
+    number.value = `${int}.${dec}`;
 };
 
-let removeSpareZeros = (amountInString) => {
-    let int = amountInString.split('.')[0];
-    let dec = amountInString.split('.')[1];
+number.removeSpareZeros = () => {
+    let int = number.value.split('.')[0];
+    let dec = number.value.split('.')[1];
 
     // Remove 0s on the left of integer part.
     while (int[0] === '0' && int.length > 1) {
@@ -251,14 +253,17 @@ let removeSpareZeros = (amountInString) => {
     }
 
     // Avoid logic in case of integer.
-    if (!amountInString.includes('.')) return int;
+    if (!number.value.includes('.')){
+        number.value = int;
+        return;
+    }
 
     // Remove 0s on the right of decimal part.
     while (dec[dec.length - 1] === '0') {
         dec = dec.substring(0, dec.length - 1)
     }
 
-    return `${int}.${dec}`;
+    number.value = `${int}.${dec}`;
 };
 
 // Get a nice decimal place precision for the scientific notation number.
