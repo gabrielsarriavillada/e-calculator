@@ -19,10 +19,11 @@ body {
     margin: 30px;
     padding-bottom: 20px;
     padding-right: 20px;
-    background-color: #005040;
+    background-color: #50a090;
     font-family: calculator, serif;
     font-size: 90px;
     text-align: right;
+    color: black;
     border-radius: 5px;
 }
 
@@ -47,20 +48,21 @@ body {
     border-radius: 20px;
     background-color: whitesmoke;
     box-shadow: 4px 4px lightgray;
+    cursor: pointer;
 }
 
 .number {
-    background-color: cadetblue;
+    background-image: linear-gradient(to right, #5f9ea0, #7fbec0);
     box-shadow: 4px 4px #3f7e80;
 }
 
 .clear {
-    background-color: brown;
+    background-image: linear-gradient(to right, #a52a2a, #c54a4a);
     box-shadow: 4px 4px #850a0a;
 }
 
 .operator {
-    background-color: darkslategray;
+    background-image: linear-gradient(to right, #2f4f4f, #4f6f6f);
     box-shadow: 4px 4px #0f2f2f;
 }
 
