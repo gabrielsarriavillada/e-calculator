@@ -8,8 +8,8 @@ const operator = {
 };
 
 // Selector of elements in the calculator.
-let displayScreen = document.querySelector('.display-screen');
-let calculatorPad = document.querySelector('.calculator-pad');
+let displayScreen = document.querySelector('#display-screen');
+let calculatorPad = document.querySelector('#calculator-pad');
 
 const SCREEN_LENGTH = 12;
 
