@@ -1,3 +1,5 @@
+import MESSAGES from './displayMessages.const.js';
+
 // Enum with the available operators.
 const operator = {
     ADDITION: 'addition',
@@ -132,7 +134,7 @@ let resolveOperation = () => {
         }
 
         if (result > (Math.pow(10, SCREEN_LENGTH) - 1)) {
-            displayScreen.innerHTML = 'TAS PASAO!';
+            displayScreen.innerHTML = MESSAGES.BIG_AMOUNT;
         } else {
             number.value = Math.abs(result).toString();
             number.sign = '';

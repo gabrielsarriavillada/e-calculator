@@ -1,3 +1,3 @@
 export default {
-    BIG_AMOUNT: 'TAS PASAO!'
+    BIG_AMOUNT: 'TAS PASAO!',
 };
