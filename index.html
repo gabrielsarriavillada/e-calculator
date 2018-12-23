@@ -7,10 +7,22 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <header>
+        <nav class="header-nav">
+            <ul id="header-menu">
+                <li title="home" class="active">Home</li>
+                <li title="calc">e-Calculator</li>
+                <li title="lcm">LCM</li>
+            </ul>
+        </nav>
+    </header>
     <main>
-        <div id="calculator-container">
-            <div id="display-screen">0</div>
-            <div id="calculator-pad">
+        <div id="home-container" class="container">
+            <p>Welcome to e-Calculator</p>
+        </div>
+        <div id="calculator-container" class="container hidden">
+            <div id="display-screen" class="display-screen">0</div>
+            <div id="calculator-pad" class="calculator-pad pad">
                 <div title="7" class="number pad-button">7</div>
                 <div title="8" class="number pad-button">8</div>
                 <div title="9" class="number pad-button">9</div>
@@ -30,6 +42,19 @@
                 <div title="decimal" class="number pad-button">.</div>
                 <div title="invert" class="operator pad-button">+/-</div>
                 <div title="equality" class="operator pad-button">=</div>
+            </div>
+        </div>
+        <div id="lcm-calculator-container" class="container hidden">
+            <div id="lcm-first-stage" class="stage-container">
+                <p>For how many numbers do you want to calculate the least common multiple? (2 by default)</p>
+                <input title="amountNumbers" placeholder="Default to 2">
+                <div id="submitAmount" class="pad pad-button operator button">Submit</div>
+            </div>
+            <div id="lcm-second-stage" class="stage-container hidden">
+                <p>Least Common Multiple Calculator</p>
+                <div id="inputs"></div>
+                <div id="getLMC" class="pad pad-button operator button">Get LCM</div>
+                <div id="result" class="result">0</div>
             </div>
         </div>
     </main>
