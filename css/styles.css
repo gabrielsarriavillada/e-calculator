@@ -43,22 +43,22 @@ li.active {
 }
 
 main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    margin-top: 43px;
+    height: calc(100vh - 43px);
 }
 
 .container {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    padding-top: 43px;
+    align-items: center;
+    height: 100%;
 }
 
 #calculator-container {
     justify-content: center;
     width: 620px;
+    margin: 0 auto;
 }
 
 .display-screen {
@@ -72,11 +72,9 @@ main {
     text-align: right;
     color: black;
     border-radius: 5px;
-    margin: 20px 50px 0;
 }
 
 .calculator-pad {
-    width: 580px;
     grid-template-columns: 100px 100px 100px 100px 100px;
     grid-template-rows: 80px 80px 80px 80px;
 }
