@@ -137,10 +137,84 @@ main {
     transform: translate(2px, 2px);
 }
 
+@media only screen and (max-width: 620px) {
+    #calculator-container {
+        justify-content: initial;
+        margin: 70px auto;
+        width: 320px;
+    }
+
+    .display-screen {
+        height: 42px;
+        width: 280px;
+        padding-bottom: 12px;
+        padding-right: 12px;
+        font-size: 50px;
+        border-radius: 3px;
+        margin: 0 14px;
+    }
+
+    .calculator-pad {
+        grid-template-columns: 64px 64px 64px 64px;
+        grid-template-rows: 52px 52px 52px 52px 52px;
+        /*margin: 0 auto;*/
+    }
+
+    .pad {
+        display: grid;
+        grid-gap: 12px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .pad-button {
+        font-size: 20px;
+        padding-top: 16px;
+        border-radius: 8px;
+        box-shadow: 3px 3px lightgray;
+    }
+
+    .number {
+        box-shadow: 3px 3px #3f7e80;
+    }
+
+    .clear {
+        box-shadow: 3px 3px #850a0a;
+    }
+
+    .operator {
+        box-shadow: 3px 3px #0f2f2f;
+    }
+
+    [title="multiplication"] {
+        grid-column-start: 1;
+        grid-row-start: 1;
+    }
+
+    [title="division"] {
+        grid-column-start: 2;
+        grid-row-start: 1;
+    }
+
+    [title="clear-to-empty"] {
+        grid-column-start: 3;
+        grid-row-start: 1;
+    }
+
+    [title="all-clear"] {
+        grid-column-start: 4;
+        grid-row-start: 1;
+    }
+
+    [title="subtraction"] {
+        grid-column-start: 4;
+        grid-row-start: 2;
+    }
+}
+
 .stage-container {
     display: flex;
     flex-direction: column;
-    /*justify-content: center;*/
     align-items: center;
 }
 
