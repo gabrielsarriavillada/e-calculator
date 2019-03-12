@@ -1,5 +1,6 @@
 import { selectOnPad } from './calc.js';
 import { getLeastCommonMultiple } from './lcm.js';
+import OPERATORS from './operators.const.js';
 
 // Selector of elements for header and containers.
 const headerMenu = document.querySelector('#header-menu');
@@ -82,10 +83,11 @@ getLMC.onclick = () => {
 // Action is performed when a button in calculator pad is clicked on.
 calculatorPad.onclick = (event) => {
     let target = event.target;
+    let action = OPERATORS.EQUALITY;
 
     if (target.tagName != 'DIV') return;
 
-    selectOnPad(target);
+    action = selectOnPad(target, action);
 };
 
 // Button is displayed as pressed while it is pressed by the mouse.
