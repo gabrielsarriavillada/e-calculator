@@ -1,4 +1,5 @@
-import { adaptAmount, removeSpareZeros }from './calc.methods.js';
+import { adaptAmount, removeSpareZeros } from './calc.methods.js';
+import { addition, subtraction, multiplication, division } from './calc.operations.js'
 import MESSAGES from './displayMessages.const.js';
 import OPERATORS from './operators.const.js';
 import SETTINGS from './calc.settings.js';
@@ -78,16 +79,16 @@ export let resolveOperation = (action, number, result, waitForNewNumber) => {
         // Result is updated according to last action.
         switch (action) {
             case OPERATORS.ADDITION:
-                result += currentAmount;
+                result = addition(result, currentAmount);
                 break;
             case OPERATORS.SUBTRACTION:
-                result -= currentAmount;
+                result = subtraction(result, currentAmount);
                 break;
             case OPERATORS.MULTIPLICATION:
-                result = result * currentAmount;
+                result = multiplication(result, currentAmount);
                 break;
             case OPERATORS.DIVISION:
-                result = result / currentAmount;
+                result = division(result, currentAmount);
                 break;
             case OPERATORS.EQUALITY:
                 result = currentAmount;
