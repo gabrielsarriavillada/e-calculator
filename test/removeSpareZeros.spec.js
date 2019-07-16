@@ -8,7 +8,7 @@ describe('removeSpaceZeros function', function(){
     it('should remove spare 0s on the left',function(){
         expect('5').to.equal(removeSpareZeros(value1));
     });
-    it('should remove spare 0s on the left',function(){
+    it('should remove spare 0s on the right',function(){
         expect('0.5').to.equal(removeSpareZeros(value2));
     });
 });
